@@ -4,6 +4,19 @@ using System.Collections.Generic;
 
 public static class ScoringManager {
 
-    public static List<float> scores = new List<float>();
+    //Variable that need to be set
+    #region
+    //Add\Remove score types here
+    public static float playerScore;
+    public static float playerTimeTaken;
+    #endregion
 
+    public static float scoreTypeCount;
+
+    public struct ScoreTypes
+    {
+        //Add\Remove score types here
+        public float score;
+        public float timeTaken;
+    }
 }
