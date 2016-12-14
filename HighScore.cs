@@ -7,6 +7,13 @@ using System.IO;
 
 public class HighScore : MonoBehaviour
 {
+
+    [System.Serializable]
+    public class ListWrapper
+    {
+        public List<float> scores;
+    }
+
     string filePath;
 
     public int numberOfHighScores = 10;
@@ -15,7 +22,7 @@ public class HighScore : MonoBehaviour
 
     public InputField playerNameInput;
 
-    public List<float> scores;
+    public ListWrapper nList = new ListWrapper();
     public List<string> playerNames;
 
     private List<string[]> playerInformation = new List<string[]>();
@@ -34,33 +41,50 @@ public class HighScore : MonoBehaviour
         {
             string[] data = ReadCSV()[scoreCounter].Split(',');
             playerNames.Add(data[0]);
-            scores.Add(int.Parse(data[1]));
+            for (int scoreTypeIndex = 1; scoreTypeIndex < ScoringManager.scores.Count - 1; ++scoreTypeIndex)
+            {
+                nList.scores.Add(float.Parse(data[scoreTypeIndex]));
+            }
         }
 
-        for (int highScoreIndex = scores.Count - 1; highScoreIndex >= 0; --highScoreIndex)
+        for (int highScoreIndex = nList.scores.Count - 1; highScoreIndex >= 0; --highScoreIndex)
         {
-            if (GameManager.score <= scores[highScoreIndex])
+            if (ScoringManager.scores[0] <= nList.scores[highScoreIndex])
             {
-                scores.Insert(highScoreIndex + 1, GameManager.score);
+                for (int scoreTypeIndex = 0; scoreTypeIndex < ScoringManager.scores.Count; ++scoreTypeIndex)
+                {
+                    nList.scores.Insert(highScoreIndex + 1, ScoringManager.scores[scoreTypeIndex]);
+                    Debug.Log(nList.scores[scoreTypeIndex]);
+                }
                 playerNames.Insert(highScoreIndex + 1, playerNameInput.text);
-                playerNameInput.gameObject.SetActive(false);
                 break;
             }
-            else if (GameManager.score > scores[0])
+            else if (ScoringManager.scores[0] > nList.scores[0])
             {
-                scores.Insert(0, GameManager.score);
+                for (int scoreTypeIndex = 0; scoreTypeIndex < ScoringManager.scores.Count; ++scoreTypeIndex)
+                {
+                    nList.scores.Insert(0, ScoringManager.scores[scoreTypeIndex]);
+                }
                 playerNames.Insert(0, playerNameInput.text);
-                playerNameInput.gameObject.SetActive(false);
                 break;
             }
         }
+
+		playerNameInput.gameObject.SetActive(false);
 
         for (int scoreIndex = 0; scoreIndex < numberOfHighScores; ++scoreIndex)
         {
-            if (scores.Count > scoreIndex)
+            if (nList.scores.Count > scoreIndex)
             {
-                string[] informationToSave = new string[] { playerNames[scoreIndex], scores[scoreIndex].ToString() };
-                playerInformation.Add(informationToSave);
+                List<string> informationToSave = new List<string>();
+                informationToSave.Add(playerNames[scoreIndex]);
+
+                for (int scoreTypeIndex = 0; scoreTypeIndex < ScoringManager.scores.Count; ++scoreTypeIndex)
+                {
+                    informationToSave.Add(nList.scores[scoreTypeIndex].ToString());
+                }
+
+                playerInformation.Add(informationToSave.ToArray());
             }
             else
             {
