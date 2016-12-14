@@ -44,6 +44,7 @@ public class HighScore : MonoBehaviour
             for (int scoreTypeIndex = 1; scoreTypeIndex < ScoringManager.scores.Count - 1; ++scoreTypeIndex)
             {
                 nList.scores.Add(float.Parse(data[scoreTypeIndex]));
+                Debug.Log(scoreTypeIndex);
             }
         }
 
@@ -54,8 +55,8 @@ public class HighScore : MonoBehaviour
                 for (int scoreTypeIndex = 0; scoreTypeIndex < ScoringManager.scores.Count; ++scoreTypeIndex)
                 {
                     nList.scores.Insert(highScoreIndex + 1, ScoringManager.scores[scoreTypeIndex]);
-                    Debug.Log(nList.scores[scoreTypeIndex]);
                 }
+
                 playerNames.Insert(highScoreIndex + 1, playerNameInput.text);
                 break;
             }
@@ -65,6 +66,7 @@ public class HighScore : MonoBehaviour
                 {
                     nList.scores.Insert(0, ScoringManager.scores[scoreTypeIndex]);
                 }
+
                 playerNames.Insert(0, playerNameInput.text);
                 break;
             }
@@ -76,6 +78,7 @@ public class HighScore : MonoBehaviour
         {
             if (nList.scores.Count > scoreIndex)
             {
+                Debug.Log("test");
                 List<string> informationToSave = new List<string>();
                 informationToSave.Add(playerNames[scoreIndex]);
 
@@ -85,11 +88,19 @@ public class HighScore : MonoBehaviour
                 }
 
                 playerInformation.Add(informationToSave.ToArray());
+                Debug.Log(playerInformation[scoreIndex]);
             }
             else
             {
-                string[] informationToSave = new string[] { "NoName", "0" };
-                playerInformation.Add(informationToSave);
+                List<string> informationToSave = new List<string>();
+                informationToSave.Add("NoName");
+
+                for (int scoreTypeIndex = 0; scoreTypeIndex < ScoringManager.scores.Count; ++scoreTypeIndex)
+                {
+                    informationToSave.Add("0");
+                }
+
+                playerInformation.Add(informationToSave.ToArray());
             }
         }
 
